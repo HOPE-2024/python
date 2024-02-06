@@ -84,7 +84,8 @@ def predict_face():
         img = cv2.imdecode(in_memory_file, cv2.IMREAD_COLOR)
 
         results = 머신_러닝으로_얼굴_인식_후_성별_나이_출력.machine_face(img)
-
+        print("검출 결과")
+        print(results)
         return jsonify({'results': results})
 
     return jsonify({'error': 'Unknown error occurred'}), 500
