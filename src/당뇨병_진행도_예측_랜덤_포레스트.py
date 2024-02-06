@@ -56,7 +56,7 @@ def diabetes_Random(age, bmi, bp, gender) :
     user_data = np.array([[age,  # age
                            gender,   # sex
                            bmi,# bmi
-                           gender, # bp
+                           bp, # bp
                            s1_mean, # s1
                            s2_mean, # s2
                            s3_mean,  # s3

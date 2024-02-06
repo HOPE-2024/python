@@ -37,8 +37,6 @@ def deep_face(img):
 
             # 검출된 얼굴 이미지를 메모리에 저장
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            _, buffer = cv2.imencode('.png', face_img)
-            face_image_bytes = base64.b64encode(buffer.tobytes()).decode('utf-8')
 
             # 나이 추정
             age_model.setInput(blob)

@@ -68,10 +68,6 @@ predicted_degree = GBR.predict(user_data)
 result = predicted_degree[0]
 print("예측된 1년 후의 당뇨병 진행도 : ", result)
 
-# 등급 및 건강 조언 출력
-grade, advice = diabetes_risk_classification(result)
-print(f"등급: {grade}\n조언: {advice}")
-
 # 특성 중요도 확인
 importance = GBR.feature_importances_
 

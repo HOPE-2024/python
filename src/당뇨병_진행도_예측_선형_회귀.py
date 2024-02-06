@@ -67,7 +67,3 @@ predicted_degree = LR.predict(user_data)
 # 예측 결과 출력
 result = predicted_degree[0]
 print("예측된 1년 후의 당뇨병 진행도 : ", result)
-
-# 등급 및 건강 조언 출력
-grade, advice = diabetes_risk_classification(result)
-print(f"등급: {grade}\n조언: {advice}")
