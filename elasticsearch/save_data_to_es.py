@@ -1,10 +1,6 @@
 # es에 데이터 적재
 from elasticsearch import Elasticsearch
-from elasticsearch import helpers
-import pandas as pd
-import schedule
 import json
-import xlrd
 from openpyxl import load_workbook
 
 # 엑셀을 json 데이터로 변환
