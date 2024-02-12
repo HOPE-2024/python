@@ -4,12 +4,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+
+
 # import matplotlib.pyplot as plt
 
-def predict_life_expectancy(year, bmi, alcohol, country) :
+def predict_life_expectancy(year, bmi, alcohol, country):
     # 데이터 준비
     data = pd.read_csv('../data/Life Expectancy Data.csv')
-    data = data.drop(columns=['Status']) # 모델 학습에 필요없다고 판단되는 'Status' 열 제거
+    data = data.drop(columns=['Status'])  # 모델 학습에 필요없다고 판단되는 'Status' 열 제거
 
     # 수치형 데이터의 결측치를 평균으로 채우기
     data.fillna(data.mean(numeric_only=True), inplace=True)
@@ -19,9 +21,11 @@ def predict_life_expectancy(year, bmi, alcohol, country) :
 
     # 국가별 평균 계산 (Year, BMI, Alcohol을 제외한 나머지 특성에 대해)
     country_averages = data.groupby('Country').mean(numeric_only=True)
+    average_bmi = country_averages.loc[country, 'BMI']
+    average_alcohol = country_averages.loc[country, 'Alcohol']
 
     # 'Country', 'Year', 'BMI', 'Alcohol', 'Life expectancy' 을 제외한 나머지 특성에 대한 국가별 평균을 저장
-    country_averages = country_averages.drop(columns=['Year', 'BMI', 'Alcohol', 'Life expectancy'])
+    country_averages = country_averages.drop(columns=['Year', 'Life expectancy'])
 
     # "목표 변수 = 예측할 값" 설정
     target = data['Life expectancy']
@@ -37,15 +41,15 @@ def predict_life_expectancy(year, bmi, alcohol, country) :
     features = scaler.fit_transform(features)
 
     # 데이터 분할
-    X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(features, target, test_size=0.2)
 
     # 모델 구축 및 훈련
     # model = RandomForestRegressor(n_estimators=100, random_state=42)
     model = RandomForestRegressor(max_depth=4)
-    model.fit(X_train, y_train)
+    model.fit(x_train, y_train)
 
     # 모델 평가 (1) : 상관 계수
-    predictions = model.predict(X_test)
+    predictions = model.predict(x_test)
     actual_values = y_test
     correlation = np.corrcoef(predictions, actual_values)
     print("Correlation Coefficient:", correlation)
@@ -58,7 +62,7 @@ def predict_life_expectancy(year, bmi, alcohol, country) :
     # plt.show()
 
     # 모델 평가 (2) : 평균 제곱 오차
-    predictions = model.predict(X_test)
+    predictions = model.predict(x_test)
     mse = mean_squared_error(y_test, predictions)
     print(f"Mean Squared Error: {mse}")
 
@@ -109,8 +113,6 @@ def predict_life_expectancy(year, bmi, alcohol, country) :
     # plt.gca().invert_yaxis()
     # plt.show()
 
-    # 기대 수명, 특성 중요도, 상관 계수 반환
-    return predicted_life_expectancy[0], sorted_importance, correlation.tolist(), predictions.tolist(), actual_values.tolist()
-
-
-
+    # 기대 수명, 특성 중요도, 상관 계수 반환, bmi, alcohol
+    return predicted_life_expectancy[
+        0], sorted_importance, correlation.tolist(), predictions.tolist(), actual_values.tolist(), average_bmi, alcohol, average_alcohol
