@@ -15,12 +15,31 @@ import 기대_수명_예측
 import 당뇨병_진행도_예측_랜덤_포레스트
 import 연도별_국가_평균_수명_시각화
 import 머신_러닝으로_얼굴_인식_후_성별_나이_출력
+import 국가_평균_수명_예측
 
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:3000'])
 
 
 # 아래 경로로 요청이 들어올때 해당 함수를 실행
+@app.route('/predict_future', methods=['POST'])
+def predict_future():
+	# 리액트로부터 받은 데이터 추출
+	data = request.json
+	year = data['Year']
+	country = data['Country']
+
+	print("리액트로부터 받은 나라 및 연도 데이터 : " + str(data))
+
+	# 예측 모델에 데이터 전달
+	prediction = 국가_평균_수명_예측.predict_future(country, year)
+
+	# JSON 형태로 결과 반환
+	return jsonify({
+		'prediction': prediction
+	})
+
+
 @app.route('/predict_life_expectancy', methods=['POST'])
 def predict_life_expectancy():
 	# 리액트로부터 받은 데이터 추출
@@ -133,7 +152,7 @@ def search_news():
 	while True:
 		driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 		time.sleep(2)  # 로딩 대기
-		scroll_count += 1 # 무한 스크롤 방지를 위해 스크롤 횟수 설정
+		scroll_count += 1  # 무한 스크롤 방지를 위해 스크롤 횟수 설정
 		if scroll_count >= scroll_limit:
 			break
 

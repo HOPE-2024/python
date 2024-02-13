@@ -1,7 +1,7 @@
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-# from sklearn.linear_model import LinearRegression
+# from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 # from sklearn.svm import SVR
 # from sklearn.neural_network import MLPRegressor
 # from sklearn.ensemble import GradientBoostingRegressor
@@ -49,12 +49,13 @@ def predict_future(country, year):
 	# 데이터 분할
 	X = data_final[['Country Name', 'Year']]
 	y = data_final['Life Expectancy'].astype(float)
-	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 	# 모델 초기화 및 학습, 평가 (Random Forest만 사용)
+	# 랜덤 포레스트 모델이 가장 평가가 좋았지만, 랜덤 포레스트 모델은 외삽에 취약 →
 	models = {
-		"Random Forest": make_pipeline(preprocessor, RandomForestRegressor(random_state=42)),
-		# "Linear Regression": make_pipeline(preprocessor, LinearRegression()),
+		# "Random Forest": make_pipeline(preprocessor, RandomForestRegressor(random_state=42)),
+		"Linear Regression": make_pipeline(preprocessor, LinearRegression()),
 		# "SVM": make_pipeline(preprocessor, SVR()),
 		# "Neural Network": make_pipeline(preprocessor, MLPRegressor(random_state=42)),
 		# "Gradient Boosting": make_pipeline(preprocessor, GradientBoostingRegressor(random_state=42))
@@ -73,10 +74,10 @@ def predict_future(country, year):
 	# 가장 성능이 좋은 모델 선택 (이 경우 Random Forest만 사용)
 	best_model_name = min(scores, key=scores.get)
 	best_model = models[best_model_name]
-	print(f"\nThe best model is {best_model_name} with RMSE {scores[best_model_name]}")
+	print(f"\n모델의 이름과 평가 : {best_model_name}, {scores[best_model_name]}")
 
 	# 예측 결과 출력
 	prediction = best_model.predict(pd.DataFrame([[country, year]], columns=['Country Name', 'Year']))
 	print(f"\nThe predicted life expectancy in {country} in {year} is {prediction[0]}")
 
-	return prediction
+	return prediction[0]
