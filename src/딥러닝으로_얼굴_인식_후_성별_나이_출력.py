@@ -3,6 +3,8 @@ import numpy as np
 import base64
 
 def deep_face(img):
+    model = 1
+
     # 딥러닝 기반 얼굴 인식 모델 로드
     facenet = cv2.dnn.readNet('../opencv/deploy.prototxt', '../opencv/res10_300x300_ssd_iter_140000.caffemodel')
 
@@ -55,4 +57,4 @@ def deep_face(img):
     _, buffer = cv2.imencode('.png', img)
     image_bytes = base64.b64encode(buffer.tobytes()).decode('utf-8')
 
-    return results, image_bytes
+    return results, image_bytes, model
