@@ -1,9 +1,15 @@
+import time
+
 import cv2
 import numpy as np
-import requests
+# import requests
 from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 import 기대_수명_예측
 import 당뇨병_진행도_예측_랜덤_포레스트
@@ -80,7 +86,6 @@ def visualize_country():
 	# 리액트로부터 받은 데이터 추출
 	data = request.json
 	country = data['Country']
-
 	print("리액트로부터 받은 기대 수명 예측 데이터 : " + str(data))
 
 	# 예측 모델에 데이터 전달
@@ -102,8 +107,6 @@ def predict_face():
 		img = cv2.imdecode(in_memory_file, cv2.IMREAD_COLOR)
 
 		results = 머신_러닝으로_얼굴_인식_후_성별_나이_출력.machine_face(img)
-		print("검출 결과")
-		print(results)
 		return jsonify({'results': results})
 
 	return jsonify({'error': 'Unknown error occurred'}), 500
@@ -112,25 +115,55 @@ def predict_face():
 @app.route('/search-news', methods=['GET'])
 def search_news():
 	query = request.args.get('query')
-	headers = {
-		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
-	}
-	search_url = f"https://search.naver.com/search.naver?where=news&query={query}"
-	response = requests.get(search_url, headers=headers)
-	soup = BeautifulSoup(response.text, 'html.parser')
 
-	# 썸네일 이미지를 포함하는 div 또는 다른 태그를 찾습니다.
-	articles = soup.find_all('li', class_='bx')
+	chrome_options = Options()
+	chrome_options.add_argument("--headless")  # 브라우저를 띄우지 않는 옵션
+	chrome_options.add_argument("window-size=1920x1080")  # 창 크기 설정
+	chrome_options.add_argument("disable-gpu")  # GPU 가속 사용 안함
+	chrome_options.add_argument("--no-sandbox")  # 샌드박스 모드 사용 안함
+	chrome_options.add_argument("--disable-dev-shm-usage")  # /dev/shm 파티션 사용 안함
+
+	driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+	driver.get(f"https://search.naver.com/search.naver?where=news&query={query}")
+
+	# 페이지 소스 가져오기 전에 스크롤 다운 로직 추가
+	scroll_limit = 1
+	scroll_count = 0
+	while True:
+		driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+		time.sleep(2)  # 로딩 대기
+		scroll_count += 1 # 무한 스크롤 방지를 위해 스크롤 횟수 설정
+		if scroll_count >= scroll_limit:
+			break
+
+	html = driver.page_source
+	driver.quit()
+
+	soup = BeautifulSoup(html, 'html.parser')
+
+	articles = soup.find_all('li', {'class': 'bx'})
 	result = []
 	for article in articles:
-		news_wrap = article.find('div', class_='news_wrap api_ani_send')
+		news_wrap = article.find('div', {'class': 'news_wrap api_ani_send'})
 		if news_wrap:
-			title_tag = news_wrap.find('a', class_='news_tit')
+			title_tag = news_wrap.find('a', {'class': 'news_tit'})
 			title = title_tag.get_text(strip=True) if title_tag else "No Title"
 			link = title_tag['href'] if title_tag else "No Link"
-			image_tag = news_wrap.find('img', class_='thumb')
-			image = image_tag['src'] if image_tag else "No Image"
-			result.append({'title': title, 'link': link, 'image': image})
+
+			image = "No Image"
+			image_tags = news_wrap.find_all('img')
+			for img in image_tags:
+				if img.parent.name != 'span' and img.has_attr('src'):
+					src = img['src']
+					if not src.startswith('data:image/gif'):  # 'data:image/gif'로 시작하지 않는 이미지만 처리
+						image = src
+						break
+			else:
+				image = "No Image"  # 조건을 만족하는 img 태그가 없는 경우
+
+			if image != "No Image" and not image.startswith('data:image/gif'):
+				result.append({'title': title, 'link': link, 'image': image})
 
 	return jsonify(result)
 
