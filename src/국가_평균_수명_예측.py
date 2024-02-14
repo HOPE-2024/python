@@ -10,7 +10,8 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import make_pipeline
 import pandas as pd
-
+import numpy as np
+import json
 
 def predict_future(country, year):
 	# 데이터 불러오기
@@ -62,22 +63,28 @@ def predict_future(country, year):
 	}
 
 	scores = {}
+	correlations= {}
+	predictions = []
+	actual_values = []
+
 	for model_name, model in models.items():
 		model.fit(X_train, y_train)
 		predictions = model.predict(X_test)
-		scores[model_name] = mean_squared_error(y_test, predictions, squared=False)  # RMSE
+		actual_values = y_test
+		scores[model_name] = mean_squared_error(actual_values, predictions, squared=False)  # RMSE
+		correlations[model_name] = np.corrcoef(predictions, actual_values).tolist()
 
 	# 평균 제곱근 오차 출력, 해당 값이 작을수록 모델의 성능이 우수
 	# for model_name, rmse in scores.items():
 	#     print(f"{model_name} : {rmse}")
 
-	# 가장 성능이 좋은 모델 선택 (이 경우 Random Forest만 사용)
+	# 가장 성능이 좋은 모델 선택
 	best_model_name = min(scores, key=scores.get)
 	best_model = models[best_model_name]
 	print(f"\n모델의 이름과 평가 : {best_model_name}, {scores[best_model_name]}")
 
 	# 예측 결과 출력
 	prediction = best_model.predict(pd.DataFrame([[country, year]], columns=['Country Name', 'Year']))
-	print(f"\nThe predicted life expectancy in {country} in {year} is {prediction[0]}")
+	print(f"\nThe predicted life expectancy in {country} in {year} is {prediction[0]} : {correlations}")
 
-	return prediction[0]
+	return prediction[0], json.dumps(correlations[best_model_name]), predictions.tolist(), actual_values.tolist()

@@ -32,11 +32,14 @@ def predict_future():
 	print("리액트로부터 받은 나라 및 연도 데이터 : " + str(data))
 
 	# 예측 모델에 데이터 전달
-	prediction = 국가_평균_수명_예측.predict_future(country, year)
+	prediction, correlations, x, y = 국가_평균_수명_예측.predict_future(country, year)
 
 	# JSON 형태로 결과 반환
 	return jsonify({
-		'prediction': prediction
+		'prediction': prediction,
+		'correlations': correlations,
+		'x': x,
+		'y': y
 	})
 
 
