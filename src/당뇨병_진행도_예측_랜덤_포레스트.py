@@ -73,24 +73,6 @@ def diabetes_Random(age, bmi, bp, gender) :
     result = predicted_degree[0]
     print("예측된 1년 후의 당뇨병 진행도 : ", result)
 
-    def diabetes_risk_classification(result):
-        if result >= 180:
-            grade = 0 # 위험
-            advice = ("당뇨병으로 진단될 가능성이 높습니다. 의사와 상담하고, 혈당 검사를 받아야 합니다. "
-                      "식이요법과 운동요법을 통해 혈당을 낮추는 것이 필요합니다.")
-        elif result >= 150 and result < 180:
-            grade = 1 # 주의
-            advice = ("당뇨병의 전단계인 공복혈당장애(IFG)로 판단될 수 있습니다. "
-                      "정기적으로 혈당 검사를 받고, 체중 조절, 식이요법, 운동요법 등을 통해 당뇨병의 발생을 예방하는 것이 필요합니다.")
-        else:
-            grade = 2 # 정상
-            advice = ("당뇨병의 위험이 낮습니다. 건강한 생활습관을 유지하고, 비만이나 고혈압, 고지혈증 등의 위험 요인을 관리하는 것이 좋습니다.")
-        return grade, advice
-
-    # 등급 및 건강 조언 출력
-    grade, advice = diabetes_risk_classification(result)
-    print(f"등급: {grade}\n조언: {advice}")
-
     # 특성 중요도 확인
     importance = RFR.feature_importances_
 
@@ -119,5 +101,5 @@ def diabetes_Random(age, bmi, bp, gender) :
     # plt.show()
 
     # 당뇨병 진행도, 특성 중요도, 상관 계수, 위험도, 조언 반환
-    return result, sorted_importance, correlation.tolist(), predictions.tolist(), actual_values.tolist(), grade, advice
+    return result, sorted_importance, correlation.tolist(), predictions.tolist(), actual_values.tolist()
 
