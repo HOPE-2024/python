@@ -35,7 +35,7 @@ def machine_face(img):
 	else:
 		for (x, y, w, h) in faces:
 			# 검출된 얼굴 이미지를 메모리에 저장
-			cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+			cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 255), 2) # 사각현 선 색깔 지정 가능
 			_, buffer = cv2.imencode('.png', img)
 			image_bytes = base64.b64encode(buffer.tobytes()).decode('utf-8')
 

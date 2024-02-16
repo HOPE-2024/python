@@ -38,7 +38,7 @@ def deep_face(img):
             blob = cv2.dnn.blobFromImage(face_img, 1.0, (227, 227), (78.4263377603, 87.7689143744, 114.895847746), swapRB=True)
 
             # 검출된 얼굴 이미지를 메모리에 저장
-            cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 255, 255), 2)
 
             # 나이 추정
             age_model.setInput(blob)
