@@ -55,7 +55,7 @@ def predict_life_expectancy():
     print("리액트로부터 받은 기대 수명 예측 데이터 : " + str(data))
 
     # 예측 모델에 데이터 전달
-    prediction, feature_importances, correlation, correlation_x, correlation_y, bmi, alcohol, alcohol_a = 기대_수명_예측.predict_life_expectancy(
+    prediction, feature_importances, correlation, correlation_x, correlation_y, bmiA, alcohol, alcohol_a = 기대_수명_예측.predict_life_expectancy(
         year,
         bmi,
         alcohol,
@@ -68,7 +68,7 @@ def predict_life_expectancy():
         'correlation': correlation,  # 상관 계수
         'correlation_x': correlation_x,
         'correlation_y': correlation_y,
-        'bmi': bmi,
+        'bmiA': bmiA,
         'alcohol': alcohol,
         'alcoholA': alcohol_a
     })
@@ -96,8 +96,6 @@ def predict_diabetes():
         'correlation': correlation,  # 상관 계수
         'correlation_x': correlation_x,
         'correlation_y': correlation_y,
-        'bmi': bmi,  # bmi
-        'bp': bp,  # 혈압
     })
 
 
