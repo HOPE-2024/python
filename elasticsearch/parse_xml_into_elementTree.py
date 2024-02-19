@@ -6,10 +6,10 @@ import time
 
 # api 호출하여 데이터 로드하는 함수
 def get_api_data(page_no, num_of_rows):
-    decoding = "zfWjn+ycQoM3yTDv236ejVl8OYIfei59LxaP6xfSo20wKHhuRA4YUJIgGX1qSVQDxQiyKU++TL2HOrszC5bgCw=="
+    decoding = "gbdPOFUEcQhjoPzjqCMf/iVGvuAXiltyL8nE7U1tN9Nue5Quv8sEYKl+8dqhOGQ8Pk1dP/K5+vRtiMtJUzrLCQ=="
 
     # url : 내가 신청한 api는 3가지 서비스를 제공하고 있어서 endpoint 뒤에 의약품 제품 허가 상세정보에 관한 경로를 추가해줬음
-    url = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService04/getDrugPrdtPrmsnDtlInq03"
+    url = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01"
     params = {'serviceKey': decoding, 'pageNo': page_no, 'numOfRows': num_of_rows, 'type': 'json'}
 
     # api 요청 실패 했을 때, 최대 10번까지 재시도 요청

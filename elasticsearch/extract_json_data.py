@@ -12,12 +12,12 @@ df = pd.DataFrame()
 data_to_save = []
 
 # 한 페이지당 100개의 결과 띄우고 마지막페이지까지 순회
-for i in range(0, 483):  # 483
+for i in range(0, 253):  # 483
     # API로부터 JSON 데이터 가져오기
     json_data = get_api_data(pageNo, numOfRows)  # 한번에 100개의 정보가 넘어옴
     # 추출하고자 하는 키들 지정
-    selected_keys = ['ITEM_SEQ', 'ITEM_NAME', 'ITEM_ENG_NAME', 'ENTP_NAME', 'ENTP_ENG_NAME', 'ETC_OTC_CODE', 'CHART', 'MAIN_ITEM_INGR', 'MAIN_INGR_ENG', 'STORAGE_METHOD', 'VALID_TERM', 'EDI_CODE', 'INGR_NAME', 'INSERT_FILE']
-
+    # selected_keys = ['ITEM_SEQ', 'ITEM_NAME', 'ITEM_ENG_NAME', 'ENTP_NAME', 'ENTP_ENG_NAME', 'ETC_OTC_CODE', 'CHART', 'MAIN_ITEM_INGR', 'MAIN_INGR_ENG', 'STORAGE_METHOD', 'VALID_TERM', 'EDI_CODE', 'INGR_NAME', 'INSERT_FILE']
+    selected_keys = ['ITEM_SEQ', 'ITEM_IMAGE']
     # 각 item 요소들을 순회하며 선택한 키들에 대한 값 추출하여 리스트로 저장
     data_to_save = [{key: item[key] for key in selected_keys} for item in json_data['body']['items']]
 
@@ -29,5 +29,5 @@ for i in range(0, 483):  # 483
     pageNo += 1
     print("페이지 번호 : ", pageNo)
 
-excel_file_path = r"C:\dev\medical_dataset\medicine_datasets\medicine_test.xlsx"
+excel_file_path = r"C:\dev\hope_project\medical_dataset\medicine_image.xlsx"
 df.to_excel(excel_file_path, index=False)
