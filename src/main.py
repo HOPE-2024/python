@@ -18,7 +18,7 @@ import 머신_러닝으로_얼굴_인식_후_성별_나이_출력
 import 국가_평균_수명_예측
 
 app = Flask(__name__)
-CORS(app, origins=['http://localhost:3000'])
+CORS(app, origins=['http://192.168.10.19:3000'])
 
 
 # 아래 경로로 요청이 들어올때 해당 함수를 실행
@@ -187,4 +187,5 @@ def search_news():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
